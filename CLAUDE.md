@@ -72,7 +72,7 @@ Apply when starting fresh, with no existing conventions to follow.
 
 - **Naming.** `snake_case` for functions, variables, and modules; `PascalCase`
   for classes (e.g. Pydantic models and `Enum` classes); `UPPER_SNAKE_CASE` for
-  module-level constants (e.g. the dropdown lists in `form_templates/lists/`).
+  module-level constants.
 - **Docstrings.** Google style for modules and public functions. Private
   functions take a one-line docstring and a `_` name prefix.
 - **Explicit imports.** No `from X import *`.
@@ -93,6 +93,53 @@ Apply when conventions are already established.
   Consistency with the surrounding code beats personal preference.
 - **When the conventions are unclear or inconsistent, ask** whether to apply the
   "New codebase" rules instead.
+
+#### CodeNow
+
+Apply to every project scaffolded with CodeNow.
+
+##### Change the scaffolding, but not its functionality
+
+- **You may edit scaffold files when the app needs it, without asking.** For
+  instance, the application's logging will require changing the provided
+  logging configuration, and that is expected.
+- **Don't change what the scaffolding does for the platform.** Keep the
+  CodeNow contract working as provided: the CI pipelines, base images, exposed
+  port, tracing headers, and the `/health` endpoint. Adapt what the app must;
+  don't remove or repurpose what the platform relies on.
+- **Prefer additive changes.** Build the application on top of the scaffold
+  and follow the patterns it already establishes, rather than restructuring
+  it.
+
+##### Log operational failures, not user mistakes
+
+- **Log what an operator must act on.** Failed calls to external services
+  (connection refused, timeouts, DNS or TLS/certificate errors), database
+  read/write failures, missing or unreadable configuration, dependency
+  outages, and any unexpected exception. Use ERROR, or WARNING for transient
+  or retried conditions, and always include the underlying cause (the real
+  exception), not just the message shown to the user.
+- **Don't log expected user input errors.** An invalid file type, empty
+  upload, missing required field, malformed input, or a not-found for a
+  user-supplied id are normal handled outcomes; logging them is noise.
+- **Never swallow an operational failure silently** - catching it and only
+  returning a message to the user, with nothing logged, hides the problem.
+- **Keep module loggers alive.** When configuring logging via `dictConfig`,
+  set `disable_existing_loggers` to false so loggers created at import time
+  are not silenced.
+
+##### Never write runtime data into the application directory
+
+- **The app directory may be read-only at runtime.** Don't create or write
+  mutable files - a database, cache, uploads, or file logs - inside it;
+  doing so fails when the filesystem is read-only (for example, SQLite then
+  reports "unable to open database file").
+- **Put writable state somewhere guaranteed writable and configurable.**
+  Resolve the path from an environment variable, defaulting to a system temp
+  directory, and use a mounted persistent volume when the data must survive
+  restarts.
+- **Keep read-only assets in the app directory.** Bundled lookup tables,
+  templates, and static files belong there; writable state does not.
 
 ## Project
 
