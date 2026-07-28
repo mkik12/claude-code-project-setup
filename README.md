@@ -1,4 +1,4 @@
-# _[framework name]_
+# Framework
 
 > Created by *Mikuláš Kadečka* for RBCZ - Finance.
 

@@ -1,10 +1,11 @@
-"""Module providing a entry point to application."""
+
+"""Module providing an entry point to application."""
+
+import json
+import logging.config
+import os
 
 from flask import Flask, request, Response, jsonify
-import logging.config
-import json
-import os
-import requests
 
 app = Flask(__name__)
 
@@ -12,10 +13,11 @@ _config_path = os.path.join(
     os.path.dirname(os.path.abspath(__file__)),
     '..', 'codenow', 'config', 'log-config.json',
 )
-with open(_config_path, 'rt') as f:
+with open(_config_path, 'rt', encoding='utf-8') as f:
     config = json.load(f)
 
 logging.config.dictConfig(config)
+
 
 @app.route('/')
 def root_route():
@@ -34,9 +36,12 @@ def root_route():
     resp.headers['X-B3-SpanId'] = headers.get('X-B3-SpanId')
     return resp
 
+
 @app.route('/health')
 def health_check():
+    """Function for serving route /health."""
     return jsonify(status='UP'), 200
+
 
 if __name__ == '__main__':
     app.run(port=8080)

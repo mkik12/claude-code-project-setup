@@ -11,7 +11,8 @@ external documentation for the detail.]_
 
 _[How to run it locally: create the `.venv`, install `requirements.txt`, start
 the app (`python src/app.py`), and open the local URL (e.g.
-http://127.0.0.1:8080).]_
+http://127.0.0.1:8080). Then how to run the checks CI also runs: `pytest` for the
+tests and `pylint src tests` for the linting.]_
 
 ## External resources
 

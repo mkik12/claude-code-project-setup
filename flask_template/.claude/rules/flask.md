@@ -34,8 +34,16 @@ it; see `codenow.md`). Organize `src/` into:
 - `src/data/` - bundled, read-only data files. Never write runtime data here
   (see `codenow.md`).
 
-Tests live in `tests/` at the project root, with a `conftest.py` that puts `src`
-on the import path (so tests import the app without a `PYTHONPATH=` prefix).
+Tests live in `tests/` at the project root, which the template already sets up -
+do not rebuild it:
+
+- `pytest.ini` sets `pythonpath = .`, so tests import as `from src.app import app`
+  with no `PYTHONPATH=` prefix on any command. The import path is configured once,
+  here.
+- `tests/conftest.py` provides a `client` fixture wrapping Flask's test client.
+- `tests/test_app.py` holds smoke tests for `/` and `/health` and for the B3
+  tracing headers. These guard the CodeNow contract, so leave them in place and
+  add your own tests alongside them.
 
 ## Conventions
 

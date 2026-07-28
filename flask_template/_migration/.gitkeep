@@ -1,0 +1,11 @@
+# Placeholder so this folder ships with the template and is here before you
+# need it.
+#
+# Migrating an existing app onto this framework? Put the whole thing in this
+# folder and tell the assistant. Everything you drop here is ignored by git, so
+# nothing leaks into the repository before it has been looked at - not even a
+# .env file.
+#
+# The assistant reads it as a reference and rebuilds the app on this template's
+# structure; it never edits or deletes anything in here. Once the rewrite is
+# working, you can delete this whole folder.

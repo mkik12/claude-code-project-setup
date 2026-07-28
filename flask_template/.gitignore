@@ -133,3 +133,19 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# Per-person settings: which language the assistant speaks to you, and whether
+# you or the assistant commits. Never committed - each person on the project has
+# their own, and /start writes it the first time they run it. Shared project
+# facts go in PROJECT.md instead.
+PROJECT.local.md
+
+# Source app being migrated onto this template (route (c) of /start).
+# Reference only, never committed. Delete the whole folder once the rewrite is
+# verified.
+#
+# `_migration/*` and not `_migration/`: git never descends into an excluded
+# directory, so the `!` line below would be ignored too and the empty folder
+# could not ship with the template.
+_migration/*
+!_migration/.gitkeep

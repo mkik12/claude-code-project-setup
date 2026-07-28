@@ -52,12 +52,18 @@ entry changes that:
 > so an entry such as `Edit(.claude/**)` [...] does not change the per-mode
 > outcome.
 
-**This is the single reason the writable operating files live at the project
-root rather than in `.claude/`.** `CLAUDE.md`, `session-memory.md`, and
-`project-intake.md` are rewritten during a normal session. Inside `.claude/`
+**This is the single reason the writable project files live at the project root
+rather than in `.claude/`.** `PROJECT.md`, `session-memory.md`, and
+`README.md` are rewritten during a normal session. Inside `.claude/`
 every one of those writes would prompt, permanently and unfixably. At the root
 they fall under `acceptEdits`. Only static config the assistant never edits at
 runtime belongs in `.claude/`.
+
+Note what this does *not* say: auto mode is not a way around it. Protected-path
+writes in `auto` are routed to the classifier rather than auto-approved, so some
+still stop, and a repository cannot enable auto mode for its users anyway. The
+root layout works in every mode; a `.claude/` layout works only in `auto` and
+`bypassPermissions`.
 
 Source: [permission modes - protected
 paths](https://code.claude.com/docs/en/permission-modes).
@@ -115,6 +121,33 @@ name.
 Source: [permission modes -
 acceptEdits](https://code.claude.com/docs/en/permission-modes).
 
+### `.claude/rules/` files load at launch unless you scope them
+
+A directory called `rules` reads as reference material fetched when needed. It is
+not:
+
+> Rules without `paths` frontmatter are loaded at launch with the same priority
+> as `.claude/CLAUDE.md`.
+
+So an instruction like "read the relevant rule before the work that needs it; do
+not preload them" describes something that never happens - the files are already
+in context. Worse, it implies the assistant is missing context it actually has.
+
+To make a rule genuinely conditional, give it `paths` frontmatter:
+
+```markdown
+---
+paths:
+  - "src/**/*.py"
+---
+```
+
+This framework deliberately leaves all three rules unscoped and accepts the
+preloading. The always-on total is roughly 360 lines across `CLAUDE.md`,
+`PROJECT.md`, and the rules, which is a modest share of the context window, and
+the rules apply to most work anyway. Scoping them would trade that for the risk
+of the relevant rule not loading when it matters.
+
 ### Shell operators split a command, and every part must match
 
 > Claude Code is aware of shell operators, so a rule like `Bash(safe-cmd *)`
@@ -133,6 +166,47 @@ to name the inner command.
 
 Source: [permissions - compound
 commands](https://code.claude.com/docs/en/permissions).
+
+### A defensive "if it exists" costs a tool call
+
+`/start` used to open with:
+
+> Read `PROJECT.md` and `session-memory.md` (if it exists).
+
+Both files are imported by `CLAUDE.md`, so both were already in context. The
+instruction produced two redundant reads, and the parenthetical produced a third
+call: the assistant ran a Glob to check whether the file was there before reading
+it. The template always ships `session-memory.md`, so the condition could never
+be false.
+
+Two lessons that will recur when writing the Copilot side:
+
+- **Never instruct a read of an imported file.** State that it is already in
+  context, so the assistant does not helpfully fetch it again.
+- **Do not hedge about files the template guarantees.** "If it exists" reads as
+  "verify this", and verifying means searching. The framework's own rule against
+  handling impossible scenarios applies to prompts, not just to code.
+
+### Windows command flags get rewritten when run through Bash
+
+On Windows the Bash tool is Git Bash, and MSYS rewrites arguments that look like
+absolute POSIX paths into Windows paths. A `/F` flag becomes `F:/`:
+
+```
+$ taskkill /F /PID 999999
+ERROR: Invalid argument/option - 'F:/'.
+
+$ taskkill //F //PID 999999
+ERROR: The process "999999" not found.
+```
+
+The second is the command actually working. This bit `/kill`, which stops the app
+by PID: run through Bash it failed and left the app running, and the error looked
+like a `taskkill` usage problem rather than a shell problem.
+
+Run Windows tools that take `/FLAG` arguments through the **PowerShell tool**,
+which does not rewrite them. Doubling the slash also works in Bash but is easy to
+drop when someone later edits the command.
 
 ## Python and CodeNow
 

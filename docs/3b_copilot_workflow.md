@@ -18,7 +18,8 @@ detail that changes between releases.
 | Design element (`2_workflow.md`) | Claude Code            | Copilot candidate                 |
 | :------------------------------- | :--------------------- | :-------------------------------- |
 | Operating file, always loaded    | `CLAUDE.md`            | `.github/copilot-instructions.md` |
-| Rules read on demand             | `.claude/rules/*.md`   | `.github/instructions/*.instructions.md` (`applyTo` frontmatter) |
+| Per-person settings              | `PROJECT.local.md`     | the same file - it is assistant-neutral |
+| Detailed convention rules        | `.claude/rules/*.md`   | `.github/instructions/*.instructions.md` (`applyTo` frontmatter) |
 | planner and coder subagents      | `.claude/agents/*.md`  | `.github/chatmodes/*.chatmode.md` |
 | start / spawn / kill / end       | `.claude/commands/*.md`| `.github/prompts/*.prompt.md`     |
 | Permission allow-list            | `.claude/settings.json`| no direct equivalent - see below  |
@@ -46,12 +47,12 @@ These need answering before the mapping above is worth implementing:
 - **Both at once.** A project created from the component will contain `.claude/`
   and `.github/` together. Decide whether the two are expected to be used
   interchangeably on the same repository, and if so, which one owns
-  `session-memory.md` and `project-intake.md` so they do not fight over them.
+  `session-memory.md` and `PROJECT.md` so they do not fight over them.
 
 ## Constraint
 
 Whatever is built here writes into the same repository the Claude version does.
-`session-memory.md`, `project-intake.md`, and the project status block are shared
+`session-memory.md`, `PROJECT.local.md`, and the project status block are shared
 state with a shared format. Diverging on their structure would mean a project
 could not switch assistants, so treat the format defined in `2_workflow.md` as
 fixed and adapt around it.

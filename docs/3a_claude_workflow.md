@@ -11,10 +11,16 @@ motivated several of the choices below is documented in
 A project created from the component contains:
 
 ~~~
-CLAUDE.md              operating file, always loaded
-session-memory.md      rolling cross-session summary
-project-intake.md      the intake questions and their answers
+PROJECT.md             project status and overview, committed and shared
+PROJECT.local.md       this person's language and commit owner, gitignored
+session-memory.md      rolling cross-session summary, written at runtime
+pytest.ini             sets the test import path, once
+tests/
+  conftest.py          the `client` fixture wrapping Flask's test client
+  test_app.py          smoke tests guarding the CodeNow contract
 .claude/
+  CLAUDE.md            how Claude Code works here, never written at runtime
+  intake.md            the read-only interview script
   settings.json        permissions
   agents/
     planner.md
@@ -25,26 +31,61 @@ project-intake.md      the intake questions and their answers
     code-style.md  flask.md  codenow.md
 ~~~
 
-The three writable files sit at the **project root, not in `.claude/`**.
-`.claude/` is a protected path: writes there prompt in every mode and cannot be
-allow-listed, because the safety check runs before Claude Code evaluates allow
-rules. Files the assistant rewrites during a normal session would prompt
-forever. At the root they fall under `acceptEdits` instead. Only static config
-belongs in `.claude/`.
+The division is by **what gets written at runtime, not by what the file is
+about**. `.claude/` is a protected path: writes there prompt in every mode and
+cannot be allow-listed, because the safety check runs before Claude Code
+evaluates allow rules. So everything the assistant rewrites during a session
+sits at the project root, where it falls under `acceptEdits`, and everything
+static lives in `.claude/`.
 
-## CLAUDE.md
+`CLAUDE.md` is static, so it belongs in `.claude/` with the rest of the config.
+That is only true because `PROJECT.md` exists to absorb the parts that change.
 
-The operating file, loaded into every session automatically. It holds:
+## CLAUDE.md and PROJECT.md
 
-- **`## Project status`** - `Initialized`, `Language`, `Repository`, `Commits`.
-  The `Initialized` field is what `/start` branches on.
-- **`## How this assistant works`** - the frozen section. It is identical across
-  every project and must not be edited per-project. It summarizes the subagents,
-  the commands, the rules index, the philosophy, and the working rules.
+The split matters: **`CLAUDE.md` is Claude's instructions, `PROJECT.md` is the
+project's state.** Claude Code reads a project instruction file from either
+`./CLAUDE.md` or `./.claude/CLAUDE.md`; this template uses the latter. It opens
+with two imports, `@../PROJECT.md` and `@../session-memory.md`, so the project
+state and the session history land in context at launch without a single tool
+call. The `../` is required: import paths resolve relative to the file containing
+them, so a bare `@PROJECT.md` would look for `.claude/PROJECT.md` and find
+nothing.
+
+Because they are imported, no command should ever instruct the assistant to read
+them. `/start` says so explicitly, since the instruction it replaced ("read
+`PROJECT.md` and `session-memory.md`, if it exists") produced three wasted calls
+per session: two redundant reads and a Glob triggered by the hedge.
+
+`CLAUDE.md` holds only how this assistant works: the subagents, the commands,
+the rules index, the philosophy, and the working rules. It is identical across
+every project, must not be edited per-project, and is never written at runtime.
+
+`PROJECT.md` holds what changes and is shared:
+
+- **`## Project status`** - `Initialized` and `Repository`. The `Initialized` field
+  is one of the two gates `/start` branches on.
 - **`## Overview`** - what the project is, in plain language.
 
-Keep it around 300 lines. Detailed conventions live in `.claude/rules/` and are
-read on demand rather than preloaded, so the always-on context stays small.
+`PROJECT.local.md` holds what is personal: the language to speak and whether the
+user or the assistant commits. It is gitignored, so each person on a shared
+project has their own, and it is deliberately **not** imported - a gitignored file
+does not exist in a fresh clone, so an import would point at nothing on a
+colleague's first session. `/start` reads it instead, and its absence is the second
+gate: no local file means someone new to an existing project, who gets asked only
+those two questions.
+
+Keeping them apart buys two things. `PROJECT.md` belongs to the project rather
+than to Claude, so a second assistant reads the same status instead of keeping a
+private copy that drifts. And because nothing writes to `CLAUDE.md` any more, it
+is static config, which is what lets it live in the protected `.claude/`
+directory at no cost.
+
+Target under 200 lines each. Detailed conventions live in `.claude/rules/`, which
+Claude Code also loads at launch, so the always-on context is both files plus all
+three rules - about 360 lines. That is a deliberate choice: the rules apply to
+most work, and scoping them with `paths` frontmatter to save a couple of hundred
+lines is not worth the risk of the relevant one failing to load.
 
 ## Subagents
 
@@ -70,8 +111,8 @@ and `/end`. The frontmatter carries a one-line `description`; the body is the
 instruction the main session follows.
 
 `/start` doubles as first-run setup. There is no separate `/initialize`: the
-command reads `Initialized` from Project status and either reports status or
-runs the setup steps in the same session.
+command checks its two gates and either reports status, sets up just this person,
+or runs the full setup, all in the same session.
 
 ## Rules
 
