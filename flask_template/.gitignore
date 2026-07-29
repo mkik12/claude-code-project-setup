@@ -134,6 +134,15 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# Gaps in the sections above, listed by `.claude/rules/code-style.md`. Appended
+# rather than edited into those sections, so a CodeNow component update to this
+# file still merges cleanly.
+*.env
+*.sqlite3
+.DS_Store
+Thumbs.db
+.idea/
+
 # Per-person settings: which language the assistant speaks to you, and whether
 # you or the assistant commits. Never committed - each person on the project has
 # their own, and /start writes it the first time they run it. Shared project

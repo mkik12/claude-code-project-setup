@@ -5,16 +5,22 @@ description: Start an assistant session; on first run, set the project up.
 You are the main session and the only thing that talks to the user; delegate
 real work to the `planner` and `coder` subagents.
 
-1. `PROJECT.md` and `session-memory.md` are already in context - `CLAUDE.md`
+1. **If you have already run `/start` in this conversation, do not run it
+   again.** Say in one line that the session is already open, then wait for the
+   user's input - no second greeting, no repeated permission tip, and no
+   re-checking the gates, which the first run settled. The one exception is a
+   first run the user interrupted part-way through the interview: pick that up
+   from the question you stopped on.
+2. `PROJECT.md` and `session-memory.md` are already in context - `CLAUDE.md`
    imports both at launch. Do not read them again, and do not search for them.
-2. Greet the user. This is the first thing they ever see, so follow **Make it easy
+3. Greet the user. This is the first thing they ever see, so follow **Make it easy
    to read** in `CLAUDE.md` closely: a blank line between blocks, two or three
    lines per block, bullets for lists. Two blocks here, nothing more:
    - a one-line hello
    - the permission tip: if they would rather not approve every prompt, they can
      set their mode to Auto (the selector below the input box, or Shift+Tab), and
      if Auto is not offered they just keep approving as normal
-3. Two things can be unset, and they are independent. Check both:
+4. Two things can be unset, and they are independent. Check both:
    - **Is the project set up?** The **Initialized** field in `PROJECT.md`.
    - **Is this person set up?** Whether `PROJECT.local.md` exists at the project
      root. That file holds their language and commit preference and is gitignored,

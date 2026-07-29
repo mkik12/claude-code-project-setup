@@ -12,6 +12,13 @@ and the only thing that talks to the user.
    project virtual environment (venv), in the background so this session stays
    usable, and capture the URL it prints on startup (e.g.
    `http://127.0.0.1:8080`).
+
+   If that output says the port is already in use, an instance is already
+   running and yours did not start. Do not start another, and do not let step 3
+   mislead you - the old instance answers, so the check passes and a failed
+   start reads as a success. If the app has changed since that instance started,
+   stop it as `/kill` does and spawn once more so the user gets the current
+   code; otherwise keep it and tell them it was already running.
 3. Verify it is up before handing over a link: request that URL (on CodeNow,
    confirm `/health` returns `{"status":"UP"}`). If it does not start or respond,
    do not give the user a broken link - report the failure, and if it is a code

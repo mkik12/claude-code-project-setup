@@ -1,1 +1,2 @@
-"""Module providing a entry point to application."""
+
+"""Module providing an entry point to application."""

@@ -14,6 +14,9 @@ End the current assistant session:
    compress older ones so the whole file stays **under 100 lines** - recent
    sessions in a few lines each, older ones collapsed to one. It is loaded into
    every session, so this is the only thing stopping it growing without bound.
+   If you already wrote an entry for this conversation, revise that one instead
+   of adding a second: one conversation is one entry, however many times `/end`
+   runs. The rest of the steps here can safely repeat; this one cannot.
 4. Before committing anything, run the tests and pylint once. This is the last
    point before the code reaches the repository, where CI runs them anyway, so a
    failure found here costs a minute and a failure found there costs a pipeline.

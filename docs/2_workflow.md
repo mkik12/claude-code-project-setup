@@ -84,6 +84,9 @@ intent. Anything the user types that is not a command is treated as work. Each
 assistant document describes how its commands are invoked.
 
 - **start**
+  - does nothing when it has already run in the same session: it says so in one
+    line and waits, rather than greeting a second time. The exception is a run
+    the user interrupted mid-interview, which it resumes
   - greets the user, and mentions once how they can reduce permission prompts.
     `PROJECT.md` and session memory are already loaded, so there is nothing to
     fetch
@@ -105,6 +108,8 @@ assistant document describes how its commands are invoked.
 - **spawn**
   - runs the app locally, in the venv and in the background, so the session stays
     usable, and captures the URL it prints on startup
+  - does not start a second instance when one is already listening: it restarts
+    that one if the app has changed since, and otherwise reuses it
   - verifies it responds before handing over a link
   - tells the user, in their language, the URL to open, what they should see, how
     to try it, and how to stop it
@@ -184,8 +189,10 @@ and pushes.
   Detailed conventions live in separate rule files alongside it.
 - **session-memory.md** - a rolling summary of what was done across sessions:
   recent sessions in detail, older ones compressed to a line. Always loaded,
-  updated at end, and held under 100 lines. Compressing the old entries is the only
-  thing keeping context small no matter how many sessions accumulate.
+  updated at end, and held under 100 lines. One session is one entry, so an end
+  that runs a second time revises its entry rather than appending another.
+  Compressing the old entries is the only thing keeping context small no matter
+  how many sessions accumulate.
 - there is **no per-agent memory**. Subagents keep nothing across runs; all
   durable state lives in `PROJECT.md` and session memory.
 
