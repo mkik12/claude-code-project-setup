@@ -1,16 +1,20 @@
+---
+description: 'App structure and conventions for this Flask template.'
+applyTo: '**'
+---
 
 # Flask template
 
 For lean, server-rendered websites. Read this before planning or writing a Flask
 app. It covers conventions only; dependency versions are not pinned here (on
 CodeNow they come from the component's `requirements.txt`, which can change - see
-`codenow.md`).
+`codenow.instructions.md`).
 
 ## Structure
 
 The app is rooted in `src/`, built on top of the component's existing
 `src/app.py` (which already wires `/` and `/health` - extend it, don't replace
-it; see `codenow.md`). Organize `src/` into:
+it; see `codenow.instructions.md`). Organize `src/` into:
 
 - `src/core/` - the Python backend, in three layers. Start minimal and add a
   layer only when the app needs it:
@@ -32,7 +36,7 @@ it; see `codenow.md`). Organize `src/` into:
   for more than one script use ES modules (a single `<script type="module">`
   entry that imports the rest) rather than many loose `<script>` tags.
 - `src/data/` - bundled, read-only data files. Never write runtime data here
-  (see `codenow.md`).
+  (see `codenow.instructions.md`).
 
 Tests live in `tests/` at the project root, which the template already sets up -
 do not rebuild it:
@@ -55,7 +59,7 @@ do not rebuild it:
   of templates.
 - Reference assets with `url_for('static', filename=...)`.
 - Treat invalid user input as a normal outcome (a bad form is not an error to
-  log); see the logging rules in `codenow.md`.
+  log); see the logging rules in `codenow.instructions.md`.
 - Use the built-in server (`app.run`) for local runs only; how the app is served
   in production is defined by the platform - do not change the exposed port.
   **Never pass `debug=True` in `app.py`.** Nothing in the repository defines how

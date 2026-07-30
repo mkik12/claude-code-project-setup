@@ -18,8 +18,9 @@ builds it, tests it, and commits it.
   repository already contains the deployment scaffold, the assistant
   configuration, and a runnable app. There is one component per architecture:
   Flask is built, FastAPI and Dash are planned.
-- **Two assistants.** Claude Code is supported today, with GitHub Copilot to
-  follow.
+- **Two assistants.** Claude Code and GitHub Copilot are both supported; the
+  Copilot side is built but not yet verified in a live session (see
+  `docs/3b_copilot_workflow.md`).
 
 ## What is in this repository
 

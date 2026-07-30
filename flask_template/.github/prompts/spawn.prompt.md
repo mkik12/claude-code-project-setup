@@ -1,5 +1,5 @@
 ---
-description: Run the app locally in the background and show the user how to open and test it.
+description: 'Run the app locally in the background and show the user how to open and test it.'
 ---
 
 Run the project's app so the user can see and try it. You are the main session
@@ -20,7 +20,7 @@ and the only thing that talks to the user.
    `--debug` belongs here and never in `app.py`: it gives you the auto-reloader
    and template reloading, so most edits need only a browser refresh rather than
    a restart, while the file that ships to CodeNow carries no debug flag. See
-   the "Conventions" section of `.claude/rules/flask.md`.
+   the "Conventions" section of `.github/instructions/flask.instructions.md`.
 
    If that output says the port is already in use, an instance is already
    running and yours did not start. Do not start another, and do not let step 3
@@ -37,4 +37,4 @@ and the only thing that talks to the user.
 4. Tell the user, in their language: the URL to open, what they should see, how to
    try the main feature, and that `/kill` stops the app when they are done. That
    is four things, so lay it out as separate blocks or bullets rather than one
-   paragraph - see **Make it easy to read** in `CLAUDE.md`.
+   paragraph - see **Make it easy to read** in `copilot-instructions.md`.

@@ -1,5 +1,5 @@
 ---
-description: Start an assistant session; on first run, set the project up.
+description: 'Start an assistant session; on first run, set the project up.'
 ---
 
 You are the main session and the only thing that talks to the user; delegate
@@ -12,21 +12,30 @@ real work to the `planner` and `coder` subagents.
    Two exceptions:
    - a first run the user interrupted part-way through the interview: pick that
      up from the question you stopped on.
-   - **`/end` has already run since the last `/start`.** The conversation window
-     stays open across `/end`, so the user can type `/start` again in the same
-     chat to begin a genuinely new session rather than opening a new one. Treat
-     this exactly like a fresh `/start`: greet again, re-check both gates, and
+   - **`/end` has already run since the last `/start`.** The chat view stays
+     open across `/end`, so the user can type `/start` again in the same chat to
+     begin a genuinely new session rather than opening a new one. Treat this
+     exactly like a fresh `/start`: greet again, re-check both gates, and
      proceed normally - do not let the earlier `/start` in the transcript make
      this look like a continuation.
-2. `PROJECT.md` and `session-memory.md` are already in context - `CLAUDE.md`
-   imports both at launch. Do not read them again, and do not search for them.
+2. Read `PROJECT.md` and `session-memory.md` now if you have not already this
+   session - see `copilot-instructions.md`, which requires it. Do not read them
+   again later in the same session.
 3. Greet the user. This is the first thing they ever see, so follow **Make it easy
-   to read** in `CLAUDE.md` closely: a blank line between blocks, two or three
-   lines per block, bullets for lists. Two blocks here, nothing more:
+   to read** in `copilot-instructions.md` closely: a blank line between blocks, two or
+   three lines per block, bullets for lists. Three blocks here, nothing more:
    - a one-line hello
    - the permission tip: if they would rather not approve every prompt, they can
-     set their mode to Auto (the selector below the input box, or Shift+Tab), and
-     if Auto is not offered they just keep approving as normal
+     raise VS Code's permission level for this session (the selector near the
+     chat input), or configure terminal auto-approval; otherwise they just keep
+     approving as normal
+   - the model reminder: in one line, ask them to set the model picker to
+     **GPT-5.6 Luna** before you start work. The reason is for you, not for
+     them: `planner` and `coder` pin their own models, but a subagent may not
+     exceed the main session's cost tier, so a cheaper selection in the picker
+     silently drags both down to it and the work runs on the wrong model with no
+     warning. Nothing in the repository can set this - the picker is theirs
+     alone, which is why it has to be asked for every session
 4. Two things can be unset, and they are independent. Check both:
    - **Is the project set up?** The **Initialized** field in `PROJECT.md`.
    - **Is this person set up?** Whether `PROJECT.local.md` exists at the project
@@ -43,7 +52,7 @@ real work to the `planner` and `coder` subagents.
      below - do not wait for another command.
    - **Project set up but no `PROJECT.local.md`:** this is someone new to an
      existing project. Say so in one line, ask only the language question (q1) and
-     the commits question (q4) from `.claude/intake.md`, and write
+     the commits question (q4) from `.github/intake.md`, and write
      `PROJECT.local.md`. Do not re-run the project setup and do not edit
      `PROJECT.md` - the project is already described. Then give the status summary
      below.
@@ -55,7 +64,7 @@ real work to the `planner` and `coder` subagents.
 
 ### 1. Interview
 
-Ask the questions in `.claude/intake.md` one at a time, in plain language.
+Ask the questions in `.github/intake.md` one at a time, in plain language.
 
 That file is the question script and is **read-only** - never write answers into
 it. Each answer has one durable home, listed in the table at the top of it, and
@@ -73,7 +82,7 @@ volunteer that they are satisfied, so offer the summary and ask for a yes. Do no
 move on until you have one.
 
 That summary is long by nature, so the confirmation must be its own final block
-with a bold lead-in - see **End with the ask** in `CLAUDE.md`. A plain closing
+with a bold lead-in - see **End with the ask** in `copilot-instructions.md`. A plain closing
 sentence after a page of bullets gets skimmed past, and then you are waiting on a
 user who does not know it is their turn.
 
@@ -109,9 +118,10 @@ user who does not know it is their turn.
      and accept what that changes. Do not decide for them.
   3. **Say what you think the app does** and check it with the user. Migrating
      here means a rewrite: the planner and coder rebuild the app's behaviour on
-     this template's structure (`.claude/rules/flask.md`), reading `_migration/`
-     as the specification rather than keeping its files in place. Nothing from
-     `_migration/` ends up in the new app by being moved or copied wholesale.
+     this template's structure (`.github/instructions/flask.instructions.md`),
+     reading `_migration/` as the specification rather than keeping its files in
+     place. Nothing from `_migration/` ends up in the new app by being moved or
+     copied wholesale.
 
      So the summary you confirm *is* the specification, and anything it misses
      will not get built. Push here rather than being polite: the code shows what

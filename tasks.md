@@ -1,5 +1,21 @@
 1. vymyslet název frameworku
 
+## GitHub Copilot side
+
+`.github/` in `flask_template/` now mirrors `.claude/` (see
+`docs/3b_copilot_workflow.md` for the mechanics). Not yet verified in a live
+session - open items before treating it as equivalent to the Claude Code side:
+
+- Run a real `/start` in VS Code and confirm `planner`/`coder` actually delegate
+  in isolation (subagent invocation for custom agents is documented as
+  experimental) and that their reports do not leak into the visible chat.
+- Confirm `.claude/` and `.github/` coexisting in one project does not cause VS
+  Code to load both sets of agents/instructions for a single Copilot session.
+- Confirm the `tools: ['search', 'usages']` list on `planner.agent.md` actually
+  excludes edit/terminal tools in the live Tools picker; adjust if the toolset
+  names differ.
+- Handbook: `handbook/2b GitHub Copilot.md` is still an empty placeholder.
+
 ## Changes made to the CI
 
 The template now passes the CodeNow quality gate on a fresh clone. Before these

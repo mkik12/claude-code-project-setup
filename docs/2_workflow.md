@@ -46,8 +46,10 @@ Two subagents:
     logging, and no runtime writes to the app directory)
   - reports what it did, or that it is stuck, to the main session
 
-Both subagents inherit the model the user chose for the session. Do not hardcode
-a model in their definitions.
+Which model a subagent runs on is an assistant-specific decision and is settled
+in `3a` and `3b` rather than here. Claude Code has both subagents inherit the
+session's model; the Copilot side pins them instead, because there a subagent may
+not exceed the main session's cost tier and silently falls back if it tries.
 
 A subagent's report is written for the main session, not for the user. A plan is a
 work order for the coder: short, decided, no rationale for choices nobody
@@ -188,11 +190,14 @@ and pushes.
   config rather than memory. Each assistant has its own; see `3a` and `3b`.
   Detailed conventions live in separate rule files alongside it.
 - **session-memory.md** - a rolling summary of what was done across sessions:
-  recent sessions in detail, older ones compressed to a line. Always loaded,
-  updated at end, and held under 100 lines. One session is one entry, so an end
-  that runs a second time revises its entry rather than appending another.
-  Compressing the old entries is the only thing keeping context small no matter
-  how many sessions accumulate.
+  recent sessions in detail, older ones compressed to a line. Every entry is
+  headed with the date and the name of whoever ran the session
+  (`## YYYY-MM-DD - Name`, the name read from `git config user.name`), and that
+  heading survives compression, so anyone reading the file can always tell who
+  did what and when. Always loaded, updated at end, and held under 100 lines. One
+  session is one entry, so an end that runs a second time revises its entry
+  rather than appending another. Compressing the old entries is the only thing
+  keeping context small no matter how many sessions accumulate.
 - there is **no per-agent memory**. Subagents keep nothing across runs; all
   durable state lives in `PROJECT.md` and session memory.
 

@@ -1,5 +1,5 @@
 ---
-description: Save the session and end it.
+description: 'Save the session and end it.'
 ---
 
 End the current assistant session:
@@ -30,7 +30,7 @@ End the current assistant session:
      mid-flight, and that is the user's call, not yours.
 5. If significant work is uncommitted, commit and push it per the commit owner in
    `PROJECT.local.md`: if the user owns commits, tell them what to commit and
-   push; otherwise commit yourself with a short message (`Co-authored-by: Claude`
-   is fine) and push. Do not end the session leaving commits unpushed.
+   push; otherwise commit yourself with a short message (`Co-authored-by: GitHub
+   Copilot` is fine) and push. Do not end the session leaving commits unpushed.
 6. Say goodbye and tell the user they can close this session and start another
    later with `/start`.

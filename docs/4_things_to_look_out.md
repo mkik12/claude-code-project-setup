@@ -208,6 +208,38 @@ Run Windows tools that take `/FLAG` arguments through the **PowerShell tool**,
 which does not rewrite them. Doubling the slash also works in Bash but is easy to
 drop when someone later edits the command.
 
+### The reloader outlives the PID that netstat reports
+
+`/spawn` runs the app with `--debug`, which starts Werkzeug's reloader: a parent
+process plus a child that does the serving. Kill the parent and the child keeps
+the socket, so the app carries on answering - and `netstat -ano` can go on naming
+the dead parent. Reproduced locally:
+
+```
+$ taskkill /F /PID 4644
+SUCCESS: The process with PID 4644 has been terminated.
+
+$ netstat -ano | grep 8099
+  TCP  127.0.0.1:8099  0.0.0.0:0  LISTENING  4644
+
+$ taskkill /F /PID 4644
+ERROR: The process "4644" not found.
+
+$ curl -s 127.0.0.1:8099/health
+{"status": "UP"}
+```
+
+The processes actually serving were 19204 and 9692. So a `netstat` → `taskkill`
+loop spins on a PID that no longer exists while the app stays up, and it reads
+like `taskkill` misbehaving rather than the reloader having forked. Stop them by
+command line instead; `/kill` step 3 covers it.
+
+`flask run --reload` without `--debug` is not the way out. It does reload Python
+changes, but leaves `Debug mode: off`, and Jinja's template auto-reload follows
+`app.debug` - so template edits would be served from cache, which is the common
+case for a server-rendered template. It also still forks, so the PID problem
+above remains either way.
+
 ## Python and CodeNow
 
 ### `dictConfig` disables existing loggers by default
