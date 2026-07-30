@@ -25,6 +25,14 @@ it; see `codenow.md`). Organize `src/` into:
   Begin as single files (`core/routes.py`, `core/services.py`); split a layer
   into a package (`routes/`, `services/`) only once there are several feature
   areas.
+  Import within `src/` without a `src.` prefix - `from core.routes import ...`
+  in `app.py`, `from .services import ...` inside `core/routes.py`. CodeNow's
+  runtime loads `app.py` as the top-level module `app` with `src/` itself as
+  the path root; a `src.`-prefixed import resolves fine in tests and local runs
+  (both put the repo root on the path) but crashes production with
+  `ModuleNotFoundError: No module named 'src'`. `app.py` puts its own directory
+  on `sys.path` at import time so this resolves the same way everywhere - keep
+  that line if you touch the top of the file.
 - `src/templates/` - Jinja HTML. One `base.html` that pages `extend`.
 - `src/static/` - front-end assets in subfolders so nothing is loose:
   `static/css/` (stylesheets) and `static/js/` (scripts), plus `static/img/`

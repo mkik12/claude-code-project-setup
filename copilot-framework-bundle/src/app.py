@@ -4,8 +4,16 @@
 import json
 import logging.config
 import os
+import sys
 
 from flask import Flask, request, Response, jsonify
+
+# CodeNow's runtime imports this file as the top-level module `app`, with this
+# directory (src/) as the path root. Local runs and tests instead import it as
+# `src.app`, with the repo root on the path. Putting this directory on
+# sys.path keeps any `core.*` imports added later resolving the same way in
+# both cases - see flask.instructions.md.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 app = Flask(__name__)
 
