@@ -18,12 +18,15 @@ report that the main session summarises rather than pastes.
 
 ## What this repo is
 
-The master/template repo. The deliverable is `flask_template/`, which becomes a
+The master/template repo. The first deliverable is `flask_template/`, which becomes a
 **CodeNow component**. A colleague creates a repository from that component,
 clones it, opens their assistant, and runs `/start`. Everything is already in
 place; the framework ships inside the component rather than being installed.
 
-- `flask_template/` - the deliverable.
+- `flask_template/` - the first deliverable.
+- `ai_bank_setup/` - the second deliverable and `flask_template`'s successor:
+  a drop-in `.claude/` with no commands and no subagents, built on eight
+  on-demand skills. Read `docs/5_ai_bank_setup.md` before touching it.
 - `docs/` - the authoritative design spec, kept in sync with the template:
   - `1_goal.md` - why the framework exists.
   - `2_workflow.md` - the design, deliberately assistant-agnostic.
@@ -32,6 +35,8 @@ place; the framework ships inside the component rather than being installed.
   - `4_things_to_look_out.md` - verified non-obvious behaviour, with sources.
     **Read this before touching permissions, logging, `.gitignore`, or anything
     that starts or stops the app.**
+  - `5_ai_bank_setup.md` - the skills-based second deliverable, and every way
+    it departs from `2_workflow.md`.
   - `copilot_model_audit_RESULT.md` - per-token model selection for the Copilot
     side, with rates verified against GitHub's docs.
 - `CLAUDE.md` - the rules for working on *this* repo.
@@ -152,6 +157,10 @@ hardest:
 
 **Claude Code side: built and verified**, including end to end against a real
 CodeNow repository.
+
+**`ai_bank_setup/.claude/`: built.** Eight skills, three rules, permissions, and
+a CLAUDE.md written in Simplified Technical English. Linted and validated, but
+not yet exercised in a live session. Its `.github/` mirror does not exist.
 
 **Copilot side: built, and run live once** - the commands, agents, and delegation
 worked, but on Claude Opus 5 rather than on the models now pinned in

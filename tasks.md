@@ -1,5 +1,30 @@
 1. vymyslet název frameworku
 
+## ai_bank_setup (the skills setup)
+
+Built and verified statically; see `docs/5_ai_bank_setup.md` for the design and
+the detail.
+
+Settled, no further work: LibreOffice is out and `docx`, `pptx` and `xlsx` each
+branch on whether `soffice` exists; `ldwh1` uses `oracledb` thin mode only; the
+docx-js and pptxgenjs creation paths have verified python-docx and python-pptx
+equivalents in each skill's `references/`; two Windows encoding bugs are fixed in
+`office/validators/base.py` and `quick_validate.py`; `ste-lint.py` no longer
+counts a possessive as a contraction or an en dash as an em dash; `docx` and
+`pptx` ship `scripts/repack.py`, so the missing `zip` binary no longer stops the
+unpack-edit-repack loop.
+
+Open before it can be called equivalent to `flask_template`:
+
+- Run a live session in a real project and confirm all eight skills trigger on
+  the right prompt and do not catch each other's work. `ldwh1` against
+  `app-database` is the pair to watch.
+- Open a generated `.docx` and `.pptx` in Word and PowerPoint once. Both pass
+  every schema check, but with no renderer on the machine nobody has looked at
+  one.
+- `.github/` mirror not started. Copilot has no on-demand skill mechanism, so
+  decide between always-on `applyTo` instructions and dropping the skills there.
+
 ## GitHub Copilot side
 
 `.github/` in `flask_template/` now mirrors `.claude/` (see

@@ -1,0 +1,45 @@
+{
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Bash(git *)",
+      "Bash(python *)",
+      "Bash(python3 *)",
+      "Bash(pip *)",
+      "Bash(pip3 *)",
+      "Bash(pytest *)",
+      "Bash(pylint *)",
+      "Bash(flask *)",
+      "Bash(waitress-serve *)",
+      "Bash(.venv/Scripts/python.exe *)",
+      "Bash(.venv/bin/python *)",
+      "PowerShell(git *)",
+      "PowerShell(python *)",
+      "PowerShell(python3 *)",
+      "PowerShell(pip *)",
+      "PowerShell(pip3 *)",
+      "PowerShell(pytest *)",
+      "PowerShell(pylint *)",
+      "PowerShell(flask *)",
+      "PowerShell(waitress-serve *)",
+      "PowerShell(.venv/Scripts/python.exe *)",
+      "PowerShell(.venv\\Scripts\\python.exe *)",
+      "PowerShell(.venv/bin/python *)"
+    ],
+    "deny": [
+      "Bash(rm -rf *)",
+      "Bash(rm -fr *)",
+      "Bash(git push *--force*)",
+      "Bash(git push *-f)",
+      "Bash(git push *-f *)",
+      "Bash(git clean *)",
+      "Bash(git reset --hard*)",
+      "PowerShell(Remove-Item *)",
+      "PowerShell(git push *--force*)",
+      "PowerShell(git push *-f)",
+      "PowerShell(git push *-f *)",
+      "PowerShell(git clean *)",
+      "PowerShell(git reset --hard*)"
+    ]
+  }
+}
